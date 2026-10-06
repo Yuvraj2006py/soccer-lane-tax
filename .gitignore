@@ -1,0 +1,13 @@
+.cache/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+*.egg-info/
+.ipynb_checkpoints/
+opendata/
+.env
+.env.*
+*.pem
+credentials.json
