@@ -43,6 +43,23 @@ python -m pytest tests/ -q
 
 Then open `docs/phase1_review/review_sample.csv` and the PNGs under `docs/phase1_review/figures/`.
 
+## Phase 2 — the metric
+
+Design and football reasoning: [`docs/phase2-design.md`](docs/phase2-design.md). Results: [`docs/phase2/summary.md`](docs/phase2/summary.md).
+
+```bash
+python scripts/phase2_lane_tax.py          # all focus presses in match 2017461 (~8 min)
+python -m pytest tests/ -q
+```
+
+Every press gets two kinds of number:
+
+- **Team:** `ways_out`. How shut in was the carrier at the moment he played it?
+- **Credit:** `lane_tax` and `credit_share`. How much of that was this presser, worked out by deleting him from
+  the frame and re-scoring?
+
+`docs/phase2/lane_maps/` shows each reviewed press twice: as it happened, and with the presser deleted.
+
 ## Layout
 
 ```text
@@ -51,5 +68,5 @@ lane_tax/          # our package
 scripts/           # smoke / batch runners
 tests/
 notebooks/         # later phases
-docs/              # later phases
+docs/              # decisions, review packs, Phase 2 results
 ```

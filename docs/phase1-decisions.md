@@ -1,5 +1,11 @@
 # Phase 1 decisions (locked for Phase 2)
 
+> **Revised in Phase 2** — see [`phase2-design.md`](phase2-design.md). The fixed corridors, the 1 s read and the
+> carrier-displacement outcome label were replaced by a per-teammate option model with pitch-control kinematics,
+> a read at the moment of release, a presser-deleted counterfactual, and a controlled-ball-progress escape label.
+> The corridor constants below remain only for the Phase 1 review visuals. The nearest-defender limitation at the
+> bottom is fixed: baselines now use true opponents from `match.json`.
+
 Match used: **2017461** — Melbourne Victory vs Auckland FC (SkillCorner open data).
 
 ## What we decided
