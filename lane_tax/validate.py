@@ -89,5 +89,59 @@ def leave_one_match_out(df: pd.DataFrame, score: str, label: str, match_col: str
     against one match driving the result; any future calibrated model must be fit on the other matches."""
     rows = []
     for mid, g in df.groupby(match_col):
-        rows.append({"match_id": mid, "n": len(g), "auc": auc(g[score], g[label])})
+        rows.append({"match_id": mid, "n": len(g), "auc": auc(g[score], g[label]),
+                     "positives": int(pd.to_numeric(g[label], errors="coerce").fillna(0).sum())})
+    return pd.DataFrame(rows)
+
+
+def lomo_mean_auc(df: pd.DataFrame, scores: list[str], labels: list[str],
+                  match_col: str = "match_id") -> pd.DataFrame:
+    """Mean / std of per-match AUCs for each score × label (weighted by match n)."""
+    rows = []
+    for lab in labels:
+        for sc in scores:
+            per = leave_one_match_out(df, sc, lab, match_col).dropna(subset=["auc"])
+            if per.empty:
+                rows.append({"label": lab, "score": sc, "mean_auc": np.nan, "std_auc": np.nan,
+                             "n_matches": 0, "n_presses": 0})
+                continue
+            w = per["n"].to_numpy(float)
+            mu = float(np.average(per["auc"], weights=w))
+            rows.append({"label": lab, "score": sc, "mean_auc": mu,
+                         "std_auc": float(per["auc"].std(ddof=0)),
+                         "n_matches": len(per), "n_presses": int(w.sum())})
+    return pd.DataFrame(rows)
+
+
+def lomo_logistic_auc(
+    df: pd.DataFrame,
+    features: list[str],
+    label: str,
+    match_col: str = "match_id",
+) -> pd.DataFrame:
+    """Fit logistic regression on 19 matches, score AUC on the held-out match. Features are
+    rank-percentile within the training set so units don't matter."""
+    from sklearn.linear_model import LogisticRegression
+
+    rows = []
+    matches = sorted(df[match_col].unique())
+    for mid in matches:
+        train = df[df[match_col] != mid]
+        test = df[df[match_col] == mid]
+        cols = features + [label]
+        tr = train[cols].apply(pd.to_numeric, errors="coerce").dropna()
+        te = test[cols].apply(pd.to_numeric, errors="coerce").dropna()
+        if tr[label].nunique() < 2 or te[label].nunique() < 2 or len(te) < 10:
+            rows.append({"match_id": mid, "n": len(te), "auc": np.nan})
+            continue
+        x_tr = np.column_stack([tr[f].rank(pct=True).to_numpy() for f in features])
+        # map test onto train ranks via empirical CDF of train
+        x_te = np.column_stack([
+            tr[f].to_numpy().searchsorted(te[f].to_numpy(), side="right") / max(len(tr), 1)
+            for f in features
+        ])
+        clf = LogisticRegression(max_iter=500, solver="lbfgs")
+        clf.fit(x_tr, tr[label].astype(int))
+        proba = clf.predict_proba(x_te)[:, 1]
+        rows.append({"match_id": mid, "n": len(te), "auc": auc(proba, te[label].astype(int))})
     return pd.DataFrame(rows)

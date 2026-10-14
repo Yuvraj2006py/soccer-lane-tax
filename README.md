@@ -60,6 +60,20 @@ Every press gets two kinds of number:
 
 `docs/phase2/lane_maps/` shows each reviewed press twice: as it happened, and with the presser deleted.
 
+## Phase 3 — all 20 matches
+
+Constants frozen. Leave-one-match-out vs proximity and SkillCorner baselines.
+
+```bash
+python scripts/phase3_validate.py            # score + validate (~30–40 min first time; caches per match)
+python scripts/phase3_validate.py --skip-score   # rebuild tables from docs/phase3/events/
+```
+
+Results: [`docs/phase3/summary.md`](docs/phase3/summary.md).
+
+**Headline:** on held-out matches, **ways out left** beats “he was close” and SkillCorner’s options-ahead
+for whether the attack was contained. **Lane Tax** stays a credit metric (~0.50 on team outcomes).
+
 ## Layout
 
 ```text

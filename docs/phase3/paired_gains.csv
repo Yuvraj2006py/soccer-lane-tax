@@ -1,0 +1,13 @@
+label,score,vs,auc_gain,ci_lo,ci_hi
+y_contained,Ways out left (fewer = higher),Nearest opponent,0.10786405584602687,0.09353806599551374,0.12119170865936048
+y_contained,Lane Tax (presser credit),Nearest opponent,-0.0717653836759401,-0.09196543833190925,-0.0515261265719275
+y_contained,Ways out left (fewer = higher),SkillCorner fewer options ahead,0.051263624327854695,0.03700248011687233,0.06666119201225626
+y_forced_error,Ways out left (fewer = higher),Nearest opponent,-0.05975237437797487,-0.07414282358785165,-0.045875170400666354
+y_forced_error,Lane Tax (presser credit),Nearest opponent,-0.17388299053574802,-0.19830045412942046,-0.15169727857285423
+y_forced_error,Ways out left (fewer = higher),SkillCorner fewer options ahead,0.13797394935195795,0.11988889441371793,0.1557051470214183
+y_press_success,Ways out left (fewer = higher),Presser time-to-carrier,0.04597404631254498,0.031224777634017663,0.06082801605604615
+y_press_success,Lane Tax (presser credit),Presser time-to-carrier,-0.020239252167911337,-0.03646463506454764,-0.0020985429459610644
+y_press_success,Ways out left (fewer = higher),SkillCorner fewer options ahead,0.022599694242919077,0.006781075320097297,0.03698346773285798
+y_regain,Ways out left (fewer = higher),Closing speed,-0.015056623999628815,-0.04285237643562163,0.013209866674545118
+y_regain,Lane Tax (presser credit),Closing speed,-0.06062120129613252,-0.08205856156679142,-0.04069095749513447
+y_regain,Ways out left (fewer = higher),SkillCorner fewer options ahead,0.08440833765119715,0.06460541876875214,0.10284845858149125

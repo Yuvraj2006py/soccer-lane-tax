@@ -68,16 +68,23 @@ def _score(ctx: MatchContext, story: PressStory, frame: int, unit: tuple[int, ..
     return score_scene(sc) if sc else None
 
 
-def score_press(ctx: MatchContext, story: PressStory) -> tuple[dict, dict[str, TaxResult | None]]:
+def score_press(
+    ctx: MatchContext, story: PressStory, *, compute_peak: bool = True
+) -> tuple[dict, dict[str, TaxResult | None]]:
+    """Score one press. ``compute_peak=False`` skips the between-frames sweep (Phase 3 speed);
+    headline tax at release is unchanged."""
     eng, p0 = press_rows(ctx, story.event_id)
     unit = chain_ids(ctx, eng)
     f_start, f_dec, f_rel = key_frames(story, p0)
     r_start, r_dec = _score(ctx, story, f_start, unit), _score(ctx, story, f_dec, unit)
     r_rel = _score(ctx, story, f_rel, unit)
     sc_rel = scene_at(ctx, story, f_rel, unit)
-    window = [r for f in range(f_start, f_rel + 1, PEAK_STEP_FRAMES) if (r := _score(ctx, story, f, unit))]
-    if r_rel is not None:
-        window.append(r_rel)
+    if compute_peak:
+        window = [r for f in range(f_start, f_rel + 1, PEAK_STEP_FRAMES) if (r := _score(ctx, story, f, unit))]
+        if r_rel is not None:
+            window.append(r_rel)
+    else:
+        window = [r for r in (r_start, r_rel) if r is not None]
 
     row = {
         "event_id": story.event_id, "match_id": ctx.match_id, "review_id": story.review_id,
